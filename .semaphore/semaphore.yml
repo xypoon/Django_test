@@ -5,10 +5,30 @@ agent:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: Build
+  - name: Install
     task:
       jobs:
-        - name: docker build
+        - name: Build Env
           commands:
-            - checkout
-            - docker build -t your-image .
+            - python3 -m venv venv
+            - source venv/bin/activate
+  - name: Pip Install
+    task:
+      jobs:
+        - name: Install Dependencies
+          commands:
+            - pip install -r requirements.txt
+  - name: Copy env files
+    task:
+      jobs:
+        - name: Copy env files
+          commands:
+            - cd testSite
+            - 'cp env .env # Edit the .env file'
+after_pipeline:
+  task:
+    jobs:
+      - name: Migrate DB and Run
+        commands:
+          - python manage.py migrate
+          - python manage.py runserver
