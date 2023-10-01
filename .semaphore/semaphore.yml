@@ -10,6 +10,7 @@ blocks:
       jobs:
         - name: Build Env
           commands:
+            - apt install python3.8-venv
             - python3 -m venv venv
             - source venv/bin/activate
   - name: Pip Install
